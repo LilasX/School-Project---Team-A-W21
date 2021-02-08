@@ -1,0 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class InteractionsWithObjects : MonoBehaviour
+{
+    private GameManager manager; //Reference to our Game Manager
+    [SerializeField] private CharacterController controller; //Reference to the controller of the character
+
+    
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        manager = GameManager.instance; //Cache of our game manager
+        controller = GetComponent<CharacterController>(); //Controller cache
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Death")
+        {
+            controller.enabled = false; //we need to deactivate the controller or it won't respawn (Start of reference 1)
+            manager.Dead(); //when character collides with deadly objects, call this method
+            controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
+
+//References
+//1- https://www.reddit.com/r/Unity3D/comments/b8p8tz/can_someone_help_me_figure_out_why_my_simple/
