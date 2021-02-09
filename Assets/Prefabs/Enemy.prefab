@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 525287649594037612}
   - component: {fileID: 525287649594037611}
   - component: {fileID: 525287649594037608}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Death
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 525287650152539518}
   - component: {fileID: 525287650152539519}
   - component: {fileID: 525287650152539516}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}

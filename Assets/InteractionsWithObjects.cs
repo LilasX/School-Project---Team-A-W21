@@ -29,7 +29,16 @@ public class InteractionsWithObjects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1))
+        {
+            if (hit.collider.tag == "Death")
+            {
+                controller.enabled = false; //we need to deactivate the controller or it won't respawn (Start of reference 1)
+                manager.Dead(); //when character collides with deadly objects, call this method
+                controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
+            }
+        }
     }
 }
 
