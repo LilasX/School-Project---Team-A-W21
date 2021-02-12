@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject respawningC; //Reference to where the character respawns after dying
     [SerializeField] private GameObject enemies; //Reference of our enemy prefab
     [SerializeField] private GameObject respawnE; //Reference to where the enemies will be spawning from
-    private float oldTime = 0f; //Old time (0 by default) which allows us to toggle (switch) between a pause and the time scale of the game
+    //private float oldTime = 0f; //Old time (0 by default) which allows us to toggle (switch) between a pause and the time scale of the game
     public bool canMoveE = true; //if enemies move or not
 
     private void Awake()
@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         InvokeRepeating("SpawnEnemies", 0, 10);
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void Dead()
@@ -49,13 +50,13 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Cancel")) //Pausing the game with button Escape
-        {
-            //Reference 1
-            float prevTime = oldTime; //Hide the saved timeScaled
-            oldTime = Time.timeScale; //Permute (alter) the timeScale so we can come back to it
-            Time.timeScale = prevTime; //Change timeScale for the hidden value
-        }
+        //if (Input.GetButtonDown("Cancel")) //Pausing the game with button Escape
+        //{
+        //    //Reference 1
+        //    float prevTime = oldTime; //Hide the saved timeScaled
+        //    oldTime = Time.timeScale; //Permute (alter) the timeScale so we can come back to it
+        //    Time.timeScale = prevTime; //Change timeScale for the hidden value
+        //}
     }
 }
 
