@@ -21,7 +21,7 @@ public class LocomotionCharacterController : MonoBehaviour
     private float moveAngle = 0f; //Movement angle of the character
     private float lookAngle = 0f; //Orientation angle of the character
     [SerializeField] private Transform camera; //Transform of the camera
-    [SerializeField] private Transform camera2; //Transform of the camera
+    [SerializeField] private Transform camera2; //Transform of the camera for shooting
     private float angleOffset = 0f; //Offset of the camera based on the character
     [SerializeField] private float turnSmooth = 0.25f; //Turning speed
 

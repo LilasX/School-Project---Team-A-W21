@@ -18,7 +18,7 @@ public class InteractionsWithObjects : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Death") //Enemies
+        if(collision.gameObject.tag == "Enemy") //Enemies
         {
             controller.enabled = false; //we need to deactivate the controller or it won't respawn (Start of reference 1)
             manager.Dead(); //when character collides with deadly objects, call this method

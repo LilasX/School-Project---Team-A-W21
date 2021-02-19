@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Shoot : MonoBehaviour
 {
+    [SerializeField] private float fireRange = 300f; //shooting distance
     private bool firing;
     public LayerMask layerE;
 
@@ -24,29 +25,27 @@ public class Shoot : MonoBehaviour
     {
         if (firing)
         {
-            firing = false;
-            RaycastHit hit;
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Get the cursor position in screen (Reference 1)
-            //if (Physics.Raycast(ray.origin, Vector3.forward, out hit, Mathf.Infinity, layerE))
-            //{
-            //    Debug.DrawRay(ray.origin, Vector3.forward * hit.distance, Color.green);
-            //    if (hit.collider.gameObject.layer == 7)
-            //    {
-            //        Destroy(hit.collider.gameObject);
-            //    }
-            //}
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerE))
+            firing = false; //to not shoot constantly all at once when pressing and releasing
+
+            RaycastHit hit; //object properties that is touching the ray
+            if (Physics.Raycast(transform.position, transform.forward, out hit, fireRange, layerE))
             {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.green);
+                //Draw a line if the ray is colliding with an object
+                Debug.DrawRay(transform.position, transform.forward * hit.distance, Color.yellow);
+
                 if (hit.collider.tag == "Enemy")
                 {
-                    Destroy(hit.collider.gameObject);
+                    Destroy(hit.collider.gameObject); //destroy enemy game object
                 }
             }
-
+            else
+            {
+                Debug.DrawRay(transform.position, transform.forward * fireRange, Color.red);
+            }
         }
     }
 }
 
 //Reference
-//1 - https://docs.unity3d.com/ScriptReference/Input-mousePosition.html
+//1- https://youtu.be/K_svD1T9XH0?t=11126 (Game Engine I's class FPS project)
+//2- https://youtu.be/0wguEh1UQ48?t=2033 (Game Engine I's class FPS project suite)

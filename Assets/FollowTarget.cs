@@ -25,6 +25,8 @@ public class FollowTarget : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        target = GameObject.FindWithTag("Player").transform; //Respawned enemies can find the target with tag Player (Reference 3)
+
         //Update the enemy's destination, if the destination is moving
         if (Vector3.Distance(target.position, destination) > 1.0f)
         {
