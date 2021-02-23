@@ -403,21 +403,32 @@ public class GameManager : MonoBehaviour
                 cameraShoot.enabled = false;
                 cursorshoot.enabled = false;
             }
-            else if (sCamShoot && stamina > 0)
+            
+            if(stamina > 0)
             {
-                rigidchar.transform.position = character.transform.position;
-                cameraShoot.transform.rotation = cameraPlayer.transform.rotation;
-                sCamPlayer = false;
-                character.SetActive(false);
-                rigidchar.SetActive(true);
-                cameraShoot.enabled = true;
-                cameraPlayer.enabled = false;
-                cursorshoot.enabled = true;
+                if (sCamShoot)
+                {
+                    rigidchar.transform.position = character.transform.position;
+                    cameraShoot.transform.rotation = cameraPlayer.transform.rotation;
+                    sCamPlayer = false;
+                    character.SetActive(false);
+                    rigidchar.SetActive(true);
+                    cameraShoot.enabled = true;
+                    cameraPlayer.enabled = false;
+                    cursorshoot.enabled = true;
+                }
             }
-
-            if(sCamShoot && stamina == 0)
+            else if(stamina == 0)
             {
-                ReminderNoStamina();
+                if (sCamShoot)
+                {
+                    ReminderNoStamina();
+                    sCamShoot = false;
+                    rigidchar.SetActive(false);
+                    cameraPlayer.enabled = true;
+                    cameraShoot.enabled = false;
+                    cursorshoot.enabled = false;
+                }
             }
         }
         else
