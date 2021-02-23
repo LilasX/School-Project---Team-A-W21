@@ -65,6 +65,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text txtlives; //text for lives
     [SerializeField] private Text diedOnce; //Reference for the message when player died once and gets respawned
     [SerializeField] private Text gameOver; //Reference for the game over txt when dead
+    [SerializeField] private int stamina = 100; //number of stamina for shooting
+    private const string prestamina = "Stamina = "; //pretext before showing the number of stamina
+    [SerializeField] private Text txtstamina; //text for stamina
+    [SerializeField] private Text txtnostamina; //text for no more stamina and cannot enter shooting mode
 
     private void Awake()
     {
@@ -136,6 +140,8 @@ public class GameManager : MonoBehaviour
         txtlives.enabled = false; //text hidden
         diedOnce.enabled = false; //when player died once
         gameOver.enabled = false; //inactive unless dead and game over
+        txtstamina.enabled = false; //text hidden
+        txtnostamina.enabled = false; //text hidden
     }
 
     public void TitlePage()
@@ -293,6 +299,8 @@ public class GameManager : MonoBehaviour
 
         txtlives.enabled = true; //activate text
         txtlives.text = prelives + lives.ToString("D1"); //show lives
+        txtstamina.enabled = true; //activate text
+        txtstamina.text = prestamina + stamina.ToString("D3"); //show stamina
     }
 
     public void Quit()
@@ -307,7 +315,6 @@ public class GameManager : MonoBehaviour
 
     public void Dead()
     {
-        Debug.Log("Player died.");
         lives--;
         diedOnce.enabled = true; //activate message
         Invoke("DiedOff", 3); //message disappears
@@ -340,6 +347,46 @@ public class GameManager : MonoBehaviour
         GameObject e = Instantiate(enemies, respawnE.transform.position, respawnE.transform.rotation);
     }
 
+    public void LoseStamina()
+    {
+        if (stamina > 0)
+        {
+            stamina -= 5;
+        }
+        
+        txtstamina.text = prestamina + stamina.ToString(); //show stamina
+        if (stamina == 0)
+        {
+            txtnostamina.enabled = true;
+            Invoke("NoMoreStamina", 3);
+            sCamShoot = false;
+            cameraShoot.enabled = false;
+            cursorshoot.enabled = false;
+            cameraPlayer.enabled = true;
+            character.SetActive(true);
+        }
+    }
+
+    public void NoMoreStamina()
+    {
+        txtnostamina.enabled = false; //deactivate
+    }
+
+    public void ReminderNoStamina()
+    {
+        txtnostamina.enabled = true;
+        Invoke("NoMoreStamina", 3);
+    }
+
+    public bool NoShoot()
+    {
+        if(stamina == 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -356,7 +403,7 @@ public class GameManager : MonoBehaviour
                 cameraShoot.enabled = false;
                 cursorshoot.enabled = false;
             }
-            else if (sCamShoot)
+            else if (sCamShoot && stamina > 0)
             {
                 rigidchar.transform.position = character.transform.position;
                 cameraShoot.transform.rotation = cameraPlayer.transform.rotation;
@@ -366,6 +413,11 @@ public class GameManager : MonoBehaviour
                 cameraShoot.enabled = true;
                 cameraPlayer.enabled = false;
                 cursorshoot.enabled = true;
+            }
+
+            if(sCamShoot && stamina == 0)
+            {
+                ReminderNoStamina();
             }
         }
         else

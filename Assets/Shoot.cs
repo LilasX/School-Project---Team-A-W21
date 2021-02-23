@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Shoot : MonoBehaviour
 {
+    private GameManager manager; //Reference to our Game Manager
     [SerializeField] private float fireRange = 300f; //shooting distance
     private bool firing;
     public LayerMask layerE;
@@ -17,30 +18,34 @@ public class Shoot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        manager = GameManager.instance; //Cache of our game manager
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (firing)
+        if (!manager.NoShoot())
         {
-            firing = false; //to not shoot constantly all at once when pressing and releasing
-
-            RaycastHit hit; //object properties that is touching the ray
-            if (Physics.Raycast(transform.position, transform.forward, out hit, fireRange, layerE))
+            if (firing)
             {
-                //Draw a line if the ray is colliding with an object
-                Debug.DrawRay(transform.position, transform.forward * hit.distance, Color.yellow);
+                firing = false; //to not shoot constantly all at once when pressing and releasing
+                manager.LoseStamina();
 
-                if (hit.collider.tag == "Enemy")
+                RaycastHit hit; //object properties that is touching the ray
+                if (Physics.Raycast(transform.position, transform.forward, out hit, fireRange, layerE))
                 {
-                    Destroy(hit.collider.gameObject); //destroy enemy game object
+                    //Draw a line if the ray is colliding with an object
+                    Debug.DrawRay(transform.position, transform.forward * hit.distance, Color.yellow);
+
+                    if (hit.collider.tag == "Enemy")
+                    {
+                        Destroy(hit.collider.gameObject); //destroy enemy game object
+                    }
                 }
-            }
-            else
-            {
-                Debug.DrawRay(transform.position, transform.forward * fireRange, Color.red);
+                else
+                {
+                    Debug.DrawRay(transform.position, transform.forward * fireRange, Color.red);
+                }
             }
         }
     }
