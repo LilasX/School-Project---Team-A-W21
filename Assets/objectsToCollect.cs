@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class objectsToCollect : MonoBehaviour
 {
     public static int objects = 0;
+    public GameObject MessagePanel;
     // Start is called before the first frame update
-    public Text flowers;
 
     void Awake()
     {
-         
+        objects++;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -19,9 +19,35 @@ public class objectsToCollect : MonoBehaviour
 
         if (other.gameObject.tag == "Player")
         {
-            objects++;
-            flowers.text = objects.ToString();
-            gameObject.SetActive(false);
+            OpenMessagePanel("");
+
+            
+        }
+
+       
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                Debug.Log("IsPressing");
+                objects--;
+                gameObject.SetActive(false);
+            }
+
+        }
+       
+    }
+    private void OnTriggerExit(Collider other)
+    {
+
+        if (other.gameObject.tag == "Player")
+        {
+            CloseMessagePanel("");
         }
     }
 
@@ -34,5 +60,14 @@ public class objectsToCollect : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void OpenMessagePanel(string text)
+    {
+        MessagePanel.SetActive(true);
+    }
+    public void CloseMessagePanel(string text)
+    {
+        MessagePanel.SetActive(false);
     }
 }

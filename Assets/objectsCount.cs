@@ -5,18 +5,25 @@ using UnityEngine.UI;
 
 public class objectsCount : MonoBehaviour
 {
-    public Text numberofflowers;
-    int numberOfflowers;
-    // Start is called before the first frame update
+
+    public Transform Spawnpoint;
+    public GameObject Prefab;
+    GameObject objUI;
+    // Use this for initialization
     void Start()
     {
-        GameObject[] flowers = GameObject.FindGameObjectsWithTag("Flower");
-        int numberOfflowers = flowers.Length;
+        objUI = GameObject.Find("ObjectNum");
     }
-
     // Update is called once per frame
     void Update()
     {
-        numberofflowers.text = numberOfflowers.ToString();
+        objUI.GetComponent<Text>().text = objectsToCollect.objects.ToString();
+        if (objectsToCollect.objects == 0)
+        {
+            Instantiate(Prefab, Spawnpoint.position, Spawnpoint.rotation);
+            objUI.GetComponent<Text>().text = "All objects collected.";
+            Destroy(objUI,4f);
+        }
+
     }
 }

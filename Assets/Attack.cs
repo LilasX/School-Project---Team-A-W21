@@ -10,7 +10,7 @@ public class Attack : MonoBehaviour
     private Vector3 destination; //Where enemies should go
     private NavMeshAgent agent; //Enemy
 
-    public Animator anim;
+    static  Animator anim;
     private GameManager manager; //Reference to our Game Manager
 
     // Start is called before the first frame update
@@ -21,7 +21,7 @@ public class Attack : MonoBehaviour
         target = GameObject.FindWithTag("Player").transform; //Respawned enemies can find the target with tag Player (Reference 3)
         destination = target.position; //We want the enemy to go toward the player's position
         agent.destination = destination; //Start and calculate the enemy's course
-
+        anim = GetComponent<Animator>();
         
     }
 
@@ -33,8 +33,12 @@ public class Attack : MonoBehaviour
         {
             destination = target.position; //The enemy's destination is the player's position
             agent.destination = destination; //Calculate the enemy's course
-           
+            
+
         }
+
+
+        
 
         //Reference 4
         if (!manager.canMoveE)
@@ -59,11 +63,20 @@ public class Attack : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.name == "CharacterMCFBX")
+        if(collision.collider.tag == "Player")
         {
-            anim.Play("Zombie Attack");
+            anim.SetBool("isattacking", true);
         }
     }
 
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.tag == "Player")
+        {
+            Debug.Log("no more collision");
+            anim.SetBool("isattacking", false);
+            anim.SetBool("iswalking", true);
+        }
+    }
 
 }

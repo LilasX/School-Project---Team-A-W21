@@ -70,6 +70,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text txtstamina; //text for stamina
     [SerializeField] private Text txtnostamina; //text for no more stamina and cannot enter shooting mode
 
+    [SerializeField] private GameObject healplace; //the platform the character stands on to heal
+    [SerializeField] private ParticleSystem healingcircle; //one of the particle system in the prefab
+    [SerializeField] private ParticleSystem healingstar; //one of the particle system in the prefab
+
     private void Awake()
     {
         if (instance == null)
@@ -386,6 +390,35 @@ public class GameManager : MonoBehaviour
         }
         return false;
     }
+
+    //public void Heal()
+    //{
+    //    CancelInvoke("SpawnEnemies");
+    //    canMoveE = false;
+    //    if (stamina < 100)
+    //    {
+    //        for (int heal = 0; heal <= 100; heal += 5)
+    //        {
+    //            stamina += 5;
+    //            healingcircle.Play();
+    //            healingstar.Play();
+    //        }
+    //    }
+    //    txtstamina.text = prestamina + stamina.ToString(); //show stamina
+
+    //    if(stamina == 100)
+    //    {
+    //        healingcircle.Stop();
+    //        healingstar.Stop();
+    //    }
+    //}
+
+    //public void StopHeal()
+    //{
+    //    healingcircle.Stop();
+    //    healingstar.Stop();
+    //    InvokeRepeating("SpawnEnemies", 0, 10);
+    //}
 
     // Update is called once per frame
     void Update()
