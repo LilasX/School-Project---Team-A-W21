@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject character; //Reference to our character
     [SerializeField] private GameObject respawningC; //Reference to where the character respawns after dying
     [SerializeField] private GameObject enemies; //Reference of our enemy prefab
-    [SerializeField] private GameObject respawnE; //Reference to where the enemies will be spawning from
+    [SerializeField] private GameObject respawnELeft; //Reference to where the enemies will be spawning from
+    [SerializeField] private GameObject respawnERight; //Reference to where the enemies will be spawning from
     //private float oldTime = 0f; //Old time (0 by default) which allows us to toggle (switch) between a pause and the time scale of the game
     public bool canMoveE = true; //if enemies move or not
     [SerializeField] private Camera cameraPlayer; //camera with character visible
@@ -65,14 +66,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text txtlives; //text for lives
     [SerializeField] private Text diedOnce; //Reference for the message when player died once and gets respawned
     [SerializeField] private Text gameOver; //Reference for the game over txt when dead
-    [SerializeField] private int stamina = 100; //number of stamina for shooting
+    [SerializeField] private float stamina = 100; //number of stamina for shooting
     private const string prestamina = "Stamina = "; //pretext before showing the number of stamina
     [SerializeField] private Text txtstamina; //text for stamina
     [SerializeField] private Text txtnostamina; //text for no more stamina and cannot enter shooting mode
-
-    [SerializeField] private GameObject healplace; //the platform the character stands on to heal
-    [SerializeField] private ParticleSystem healingcircle; //one of the particle system in the prefab
-    [SerializeField] private ParticleSystem healingstar; //one of the particle system in the prefab
+    [SerializeField] private Text txtnoshooting; //text for no shooting when recovering stamina
+    private static float recovery = 5f; //recover stamina 
+    private bool healed; //after healing
+    private bool instantiateMode = false;
+    [SerializeField] private float instantiateTimer = 10f;
 
     private void Awake()
     {
@@ -146,6 +148,7 @@ public class GameManager : MonoBehaviour
         gameOver.enabled = false; //inactive unless dead and game over
         txtstamina.enabled = false; //text hidden
         txtnostamina.enabled = false; //text hidden
+        txtnoshooting.enabled = false; //text hidden
     }
 
     public void TitlePage()
@@ -304,7 +307,7 @@ public class GameManager : MonoBehaviour
         txtlives.enabled = true; //activate text
         txtlives.text = prelives + lives.ToString("D1"); //show lives
         txtstamina.enabled = true; //activate text
-        txtstamina.text = prestamina + stamina.ToString("D3"); //show stamina
+        txtstamina.text = prestamina + Mathf.FloorToInt(stamina).ToString("D3"); //show stamina
     }
 
     public void Quit()
@@ -325,8 +328,11 @@ public class GameManager : MonoBehaviour
         txtlives.text = prelives + lives.ToString("D1"); //show lives
         character.transform.position = respawningC.transform.position;
         rigidchar.transform.position = respawningC.transform.position;
+        healed = false;
         CancelInvoke("SpawnEnemies");
         canMoveE = false;
+        instantiateMode = false;
+        instantiateTimer = 10f;
         InvokeRepeating("SpawnEnemies", 30, 10);
         if(lives == 0)
         {
@@ -348,26 +354,42 @@ public class GameManager : MonoBehaviour
     public void SpawnEnemies()
     {
         canMoveE = true;
-        GameObject e = Instantiate(enemies, respawnE.transform.position, respawnE.transform.rotation);
+        GameObject e = Instantiate(enemies, respawnELeft.transform.position, respawnELeft.transform.rotation);
+        GameObject e2 = Instantiate(enemies, respawnERight.transform.position, respawnERight.transform.rotation);
+    }
+    
+    public void SpawnEnemiesWithoutInvoke()
+    {
+        //Reference 2
+        instantiateTimer -= Time.deltaTime;
+        if (Mathf.FloorToInt(instantiateTimer) == 0)
+        {
+            canMoveE = true;
+            GameObject e = Instantiate(enemies, respawnELeft.transform.position, respawnELeft.transform.rotation);
+            GameObject e2 = Instantiate(enemies, respawnERight.transform.position, respawnERight.transform.rotation);
+            instantiateTimer = 10f;
+        }
     }
 
     public void LoseStamina()
     {
-        if (stamina > 0)
+        if (Mathf.FloorToInt(stamina) > 0)
         {
             stamina -= 5;
         }
         
-        txtstamina.text = prestamina + stamina.ToString(); //show stamina
-        if (stamina == 0)
+        txtstamina.text = prestamina + Mathf.FloorToInt(stamina).ToString(); //show stamina
+        if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5) 
         {
             txtnostamina.enabled = true;
             Invoke("NoMoreStamina", 3);
             sCamShoot = false;
+            character.transform.position = rigidchar.transform.position;
+            character.SetActive(true);
+            rigidchar.SetActive(false);
+            cameraPlayer.enabled = true;
             cameraShoot.enabled = false;
             cursorshoot.enabled = false;
-            cameraPlayer.enabled = true;
-            character.SetActive(true);
         }
     }
 
@@ -379,56 +401,37 @@ public class GameManager : MonoBehaviour
     public void ReminderNoStamina()
     {
         txtnostamina.enabled = true;
-        Invoke("NoMoreStamina", 3);
+        Invoke("NoMoreStamina", 2);
+    }
+    
+    public void NoShooting()
+    {
+        txtnoshooting.enabled = false; //deactivate
+    }
+
+    public void ReminderNoShooting()
+    {
+        txtnoshooting.enabled = true;
+        Invoke("NoShooting", 2);
     }
 
     public bool NoShoot()
     {
-        if(stamina == 0)
+        if(Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
         {
             return true;
         }
         return false;
     }
 
-    //public void Heal()
-    //{
-    //    CancelInvoke("SpawnEnemies");
-    //    canMoveE = false;
-    //    if (stamina < 100)
-    //    {
-    //        for (int heal = 0; heal <= 100; heal += 5)
-    //        {
-    //            stamina += 5;
-    //            healingcircle.Play();
-    //            healingstar.Play();
-    //        }
-    //    }
-    //    txtstamina.text = prestamina + stamina.ToString(); //show stamina
-
-    //    if(stamina == 100)
-    //    {
-    //        healingcircle.Stop();
-    //        healingstar.Stop();
-    //    }
-    //}
-
-    //public void StopHeal()
-    //{
-    //    healingcircle.Stop();
-    //    healingstar.Stop();
-    //    InvokeRepeating("SpawnEnemies", 0, 10);
-    //}
-
     // Update is called once per frame
     void Update()
     {
-        if(gameIsOn)
+        if (gameIsOn)
         {
             if (sCamPlayer)
             {
                 character.transform.position = rigidchar.transform.position;
-                cameraPlayer.transform.rotation = cameraShoot.transform.rotation;
                 sCamShoot = false;
                 character.SetActive(true);
                 rigidchar.SetActive(false);
@@ -436,13 +439,12 @@ public class GameManager : MonoBehaviour
                 cameraShoot.enabled = false;
                 cursorshoot.enabled = false;
             }
-            
-            if(stamina > 0)
+
+            if (Mathf.FloorToInt(stamina) >= 5)
             {
                 if (sCamShoot)
                 {
                     rigidchar.transform.position = character.transform.position;
-                    cameraShoot.transform.rotation = cameraPlayer.transform.rotation;
                     sCamPlayer = false;
                     character.SetActive(false);
                     rigidchar.SetActive(true);
@@ -451,7 +453,7 @@ public class GameManager : MonoBehaviour
                     cursorshoot.enabled = true;
                 }
             }
-            else if(stamina == 0)
+            else if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
             {
                 if (sCamShoot)
                 {
@@ -462,6 +464,49 @@ public class GameManager : MonoBehaviour
                     cameraShoot.enabled = false;
                     cursorshoot.enabled = false;
                 }
+            }
+
+            RaycastHit hit;
+            if (Physics.Raycast(character.transform.position, Vector3.down, out hit, 5))
+            {
+                if (hit.collider.tag == "Heal") //Heal object
+                {
+                    CancelInvoke("SpawnEnemies");
+                    instantiateMode = false;
+                    instantiateTimer = 10f;
+                    canMoveE = false;
+                    healed = true;
+                    if (Mathf.FloorToInt(stamina) < 100)
+                    {
+                        stamina += recovery * Time.deltaTime;
+                    }
+
+                    txtstamina.text = prestamina + Mathf.FloorToInt(stamina).ToString(); //show stamina
+
+                    if (sCamShoot)
+                    {
+                        ReminderNoShooting();
+                        sCamShoot = false;
+                        character.transform.position = rigidchar.transform.position;
+                        character.SetActive(true);
+                        rigidchar.SetActive(false);
+                        cameraPlayer.enabled = true;
+                        cameraShoot.enabled = false;
+                        cursorshoot.enabled = false;
+                    }
+                }
+                else if (!canMoveE && healed && !instantiateMode)
+                {
+                    healed = false;
+                    instantiateMode = true;
+                    canMoveE = true;
+                }
+            }
+
+            if (instantiateMode)
+            {
+                SpawnEnemiesWithoutInvoke();
+                CancelInvoke("SpawnEnemies");
             }
         }
         else
@@ -485,3 +530,4 @@ public class GameManager : MonoBehaviour
 
 //References
 //1- Script for pausing the game in Game Engine I class project Rebonds : https://youtu.be/4fmy_ymj6jE?t=3332
+//2- https://answers.unity.com/questions/637597/instantiate-at-intervals.html (for instantiating prefabs at a certain interval to replace InvokeRepeating)

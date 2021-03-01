@@ -21,7 +21,7 @@ public class LocomotionCharacterController : MonoBehaviour
     private float moveAngle = 0f; //Movement angle of the character
     private float lookAngle = 0f; //Orientation angle of the character
     [SerializeField] private Transform camera; //Transform of the camera
-    [SerializeField] private Transform camera2; //Transform of the camera for shooting
+    //[SerializeField] private Transform camera2; //Transform of the camera for shooting
     private float angleOffset = 0f; //Offset of the camera based on the character
     [SerializeField] private float turnSmooth = 0.25f; //Turning speed
 
@@ -111,10 +111,10 @@ public class LocomotionCharacterController : MonoBehaviour
             {
                 angleOffset = camera.eulerAngles.y; //Save the degrees in Y axis of the camera
             }
-            else if(camera2.gameObject.activeInHierarchy)
-            {
-                angleOffset = camera2.eulerAngles.y; //Save the degrees in Y axis of the camera
-            }
+            //else if(camera2.gameObject.activeInHierarchy)
+            //{
+            //    angleOffset = camera2.eulerAngles.y; //Save the degrees in Y axis of the camera
+            //}
             
             moveAngle = (Mathf.Atan2(playerVelocity.x, playerVelocity.z) * Mathf.Rad2Deg) + angleOffset; //Movement angle
             lookAngle = Mathf.LerpAngle(transform.eulerAngles.y, moveAngle, turnSmooth); //Turn progressively toward desired angle

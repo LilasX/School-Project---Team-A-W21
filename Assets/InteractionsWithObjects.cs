@@ -7,7 +7,9 @@ public class InteractionsWithObjects : MonoBehaviour
     private GameManager manager; //Reference to our Game Manager
     [SerializeField] private CharacterController controller; //Reference to the controller of the character
 
-    
+    [SerializeField] private ParticleSystem healingcircle; //one of the particle system in the prefab
+    [SerializeField] private ParticleSystem healingstar; //one of the particle system in the prefab
+
 
     // Start is called before the first frame update
     void Start()
