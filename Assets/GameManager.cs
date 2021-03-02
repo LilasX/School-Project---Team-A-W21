@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     private bool sCamPlayer = false;
     private bool sCamShoot = false;
     [SerializeField] private GameObject rigidchar; //reference to the rigidbody replacing character
-    private string sceneToReload = "LilasScene"; // Load this screen when retrying game
+    private string sceneToReload = "LilasSceneOriginalUntouched"; // Load this screen when retrying game
     private bool gameIsOn = false;
 
     //Menu UI
