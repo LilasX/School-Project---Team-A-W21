@@ -10123,7 +10123,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1582628363}
-  m_LocalRotation: {x: 0.16733053, y: -0.000000008481892, z: 0.0000000014395765, w: 0.9859009}
+  m_LocalRotation: {x: 0.16733053, y: 0.000000008481893, z: -0.0000000014395766, w: 0.9859009}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -11382,17 +11382,17 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'When you lose a life or when you''re recovering stamina, the enemies will
+  m_Text: 'When you lose a life or when you''re in a resting spot, the enemies will
     stop moving temporarily.
 
     Don''t shoot carelessly and watch out for your
     stamina !
 
-    When your stamina reaches 0, you won''t be able to switch to shooting
-    mode.
+    When your stamina is less than 5, you won''t be able to switch
+    to shooting mode.
 
-    There are resting spots where you can recover stamina but keep in
-    mind that you can''t enter in shooting mode until you leave the spot.'
+    There are resting spots where you can recover stamina
+    but keep in mind that you can''t enter in shooting mode until you leave the spot.'
 --- !u!222 &1984680405
 CanvasRenderer:
   m_ObjectHideFlags: 0
