@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class Shoot : MonoBehaviour
 {
     private GameManager manager; //Reference to our Game Manager
-    [SerializeField] private float fireRange = 300f; //shooting distance
+    [SerializeField] private float fireRange = 100f; //shooting distance
     private bool firing;
     public LayerMask layerE;
 

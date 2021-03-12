@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Camera cameraShoot; //first person camera for shooting
     [SerializeField] private Camera cameraMenu; //camera for the menu
     [SerializeField] private Image cursorshoot; //shooting image
-    private bool sCamPlayer = false;
+    //private bool sCamPlayer = false;
     private bool sCamShoot = false;
     [SerializeField] private GameObject rigidchar; //reference to the rigidbody replacing character
     private string sceneToReload = "DemoScene"; // Load this screen when retrying game
@@ -88,10 +88,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SwitchCamPlayer(InputAction.CallbackContext context)
-    {
-        sCamPlayer = context.performed;
-    }
+    //public void SwitchCamPlayer(InputAction.CallbackContext context)
+    //{
+    //    sCamPlayer = context.performed;
+    //}
 
     public void SwitchCamShoot(InputAction.CallbackContext context)
     {
@@ -424,33 +424,49 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
+    //OnClick for message when collecting an object
+    public void ConfirmMessage()
+    {
+        //Message disappears
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (gameIsOn)
         {
-            if (sCamPlayer)
-            {
-                character.transform.position = rigidchar.transform.position;
-                sCamShoot = false;
-                character.SetActive(true);
-                rigidchar.SetActive(false);
-                cameraPlayer.enabled = true;
-                cameraShoot.enabled = false;
-                cursorshoot.enabled = false;
-            }
+            //if (sCamPlayer)
+            //{
+            //    character.transform.position = rigidchar.transform.position;
+            //    sCamShoot = false;
+            //    character.SetActive(true);
+            //    rigidchar.SetActive(false);
+            //    cameraPlayer.enabled = true;
+            //    cameraShoot.enabled = false;
+            //    cursorshoot.enabled = false;
+            //}
 
             if (Mathf.FloorToInt(stamina) >= 5)
             {
                 if (sCamShoot)
                 {
                     rigidchar.transform.position = character.transform.position;
-                    sCamPlayer = false;
+                    //sCamPlayer = false;
                     character.SetActive(false);
                     rigidchar.SetActive(true);
                     cameraShoot.enabled = true;
                     cameraPlayer.enabled = false;
                     cursorshoot.enabled = true;
+                }
+                else
+                {
+                    //character.transform.position = rigidchar.transform.position;
+                    sCamShoot = false;
+                    character.SetActive(true);
+                    rigidchar.SetActive(false);
+                    cameraPlayer.enabled = true;
+                    cameraShoot.enabled = false;
+                    cursorshoot.enabled = false;
                 }
             }
             else if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
