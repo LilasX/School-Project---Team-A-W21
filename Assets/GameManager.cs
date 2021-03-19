@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     //private bool sCamPlayer = false;
     private bool sCamShoot = false;
     [SerializeField] private GameObject rigidchar; //reference to the rigidbody replacing character
-    private string sceneToReload = "DemoScene"; // Load this screen when retrying game
+    private string sceneToReload = "LilasSceneS"; // Load this screen when retrying game
     private bool gameIsOn = false;
 
     //Menu UI
@@ -101,6 +101,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1;
         gameIsOn = false;
         cameraPlayer.enabled = false;
         cameraShoot.enabled = false;
@@ -317,7 +318,7 @@ public class GameManager : MonoBehaviour
 
     public void PlayAgain()
     {
-        SceneManager.LoadScene(sceneToReload); //Load the scene SampleScene
+        SceneManager.LoadScene(sceneToReload); //Load the game scene
     }
 
     public void Dead()

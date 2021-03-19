@@ -9,6 +9,9 @@ TagManager:
   - Enemy
   - Flower
   - Heal
+  - Map
+  - Portal
+  - Dummy
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - Water
   - UI
   - 
-  - Enemy
+  - 
   - Player
   - OnlyCollideWithPlayer
   - DoNotCollideWithPlayer

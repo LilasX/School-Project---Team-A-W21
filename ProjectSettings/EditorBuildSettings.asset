@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LilasSceneS.unity
+    guid: 75a316455e242ef41b83fe9d805e473f
+  - enabled: 1
     path: Assets/Scenes/LilasScene.unity
     guid: 5978e21b68f2e6e43bd6eb857fb7f94e
   m_configObjects: {}
