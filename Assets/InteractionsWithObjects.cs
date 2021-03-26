@@ -26,7 +26,22 @@ public class InteractionsWithObjects : MonoBehaviour
             manager.Dead(); //when character collides with deadly objects, call this method
             controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
         }
+
+        if (collision.gameObject.tag == "SecretB")
+        {
+            controller.enabled = false; //we need to deactivate the controller or it won't respawn (Start of reference 1)
+            manager.SecretEventActivate();
+            controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
+        }
+
+        if (collision.gameObject.tag == "SecretE")
+        {
+            controller.enabled = false; //we need to deactivate the controller or it won't respawn (Start of reference 1)
+            manager.SecretEventAnswer();
+            controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
+        }
     }
+
 
     // Update is called once per frame
     void Update()

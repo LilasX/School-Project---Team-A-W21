@@ -9,6 +9,8 @@ public class Shoot : MonoBehaviour
     [SerializeField] private float fireRange = 100f; //shooting distance
     private bool firing;
     public LayerMask layerE;
+    private Monster monster;
+    
 
     public void OnFire(InputAction.CallbackContext context)
     {
@@ -18,6 +20,7 @@ public class Shoot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        monster = new Monster();
         manager = GameManager.instance; //Cache of our game manager
     }
 
@@ -30,7 +33,7 @@ public class Shoot : MonoBehaviour
             {
                 firing = false; //to not shoot constantly all at once when pressing and releasing
                 manager.LoseStamina();
-
+                
                 RaycastHit hit; //object properties that is touching the ray
                 if (Physics.Raycast(transform.position, transform.forward, out hit, fireRange, layerE))
                 {
@@ -39,8 +42,22 @@ public class Shoot : MonoBehaviour
 
                     if (hit.collider.tag == "Enemy")
                     {
+                        
                         Destroy(hit.collider.gameObject); //destroy enemy game object
                     }
+                    if (hit.collider.tag == "Monster")
+                    {
+                        monster.life -= 25;
+                        
+                        
+                        if (monster.life <= 0)
+                        {
+                            monster.Deathanim();
+                            
+                            Destroy(hit.collider.gameObject,4f); //destroy enemy game object
+                        }
+                    }
+
                 }
                 else
                 {

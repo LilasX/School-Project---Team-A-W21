@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Attack : MonoBehaviour
+public class Monster : MonoBehaviour
 {
     //[SerializeField] private Transform target; //Character
     private Transform target; //Character
-    private Vector3 destination; //Where enemies should go
+    public int life = 100;
     private NavMeshAgent agent; //Enemy
 
     static  Animator anim;
     private GameManager manager; //Reference to our Game Manager
-
+    public float MobdistanceRun = 4.0f;
+    Vector3 newPos;
     // Start is called before the first frame update
     void Start()
     {
         manager = GameManager.instance; //Cache of our game manager
         agent = GetComponent<NavMeshAgent>(); //Cache enemy
-        target = GameObject.FindWithTag("Player").transform; //Respawned enemies can find the target with tag Player (Reference 3)
-        destination = target.position; //We want the enemy to go toward the player's position
-        agent.destination = destination; //Start and calculate the enemy's course
+        target = GameObject.FindWithTag("Player").transform; 
+       
         anim = GetComponent<Animator>();
         
     }
@@ -28,14 +28,24 @@ public class Attack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Update the enemy's destination, if the destination is moving
+        float distance = Vector3.Distance(transform.position, target.transform.position);
+
+        if(distance < MobdistanceRun)
+        {
+            Vector3 dirtoPlayer = transform.position - target.transform.position;
+            newPos = transform.position - dirtoPlayer;
+            agent.SetDestination(newPos);
+        }
+
+        /*//Update the enemy's destination, if the destination is moving
         if (Vector3.Distance(target.position, destination) > 1.0f)
         {
             destination = target.position; //The enemy's destination is the player's position
             agent.destination = destination; //Calculate the enemy's course
             
 
-        }
+        }*/
+
 
 
         
@@ -67,6 +77,14 @@ public class Attack : MonoBehaviour
         {
             anim.SetBool("isattacking", true);
         }
+    }
+
+    public void Deathanim()
+    {
+        //newPos = transform.position;
+        anim.SetBool("iswalking", false);
+        anim.SetBool("isattacking", false);
+        anim.SetBool("IsDying", true);
     }
 
     private void OnCollisionExit(Collision collision)

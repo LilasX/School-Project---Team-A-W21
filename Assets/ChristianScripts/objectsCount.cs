@@ -49,7 +49,7 @@ public class objectsCount : MonoBehaviour
         else if (objectsToCollect.objects == 0 && portalhasnotspawned == true)
         {
             Instantiate(Prefab, Spawnpoint.position, Spawnpoint.rotation);
-            //Instantiate(monster, Spawnpoint.position + offset, Spawnpoint.rotation);
+            Instantiate(monster, Spawnpoint.position + offset, Spawnpoint.rotation);
             objUI.GetComponent<Text>().text = pretext + "Complete";
             //Invoke("Setfalse", 4f);
             portalhasnotspawned = false;

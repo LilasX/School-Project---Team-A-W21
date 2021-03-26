@@ -12,6 +12,9 @@ TagManager:
   - Map
   - Portal
   - Dummy
+  - Monster
+  - SecretB
+  - SecretE
   layers:
   - Default
   - TransparentFX

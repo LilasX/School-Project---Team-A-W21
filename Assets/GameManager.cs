@@ -76,6 +76,31 @@ public class GameManager : MonoBehaviour
     private bool instantiateMode = false;
     [SerializeField] private float instantiateTimer = 10f;
 
+    [SerializeField] private GameObject secretMessage; 
+    [SerializeField] private GameObject secretobject; 
+    [SerializeField] private GameObject secretAnswer; 
+    [SerializeField] private GameObject afterSecretobject;
+    [SerializeField] private Button[] buttonsEvent;
+    [SerializeField] private Button buttonH;
+    [SerializeField] private Button buttonE;
+    [SerializeField] private Button buttonL;
+    [SerializeField] private Button buttonP;
+    [SerializeField] private Button buttonS;
+    [SerializeField] private Button buttonA;
+    [SerializeField] private Button buttonT;
+    [SerializeField] private Button buttonM;
+    [SerializeField] private GameObject[] buttonsPositions;
+    private Button buttonSpawn;
+    int index;
+    [SerializeField] private Text oneIMark;
+    [SerializeField] private Text twoIMark;
+    [SerializeField] private Text threeIMark;
+    [SerializeField] private Text fourIMark;
+    private const string h = "H";
+    private const string e = "E";
+    private const string l = "L";
+    private const string p = "P";
+
     private void Awake()
     {
         if (instance == null)
@@ -150,6 +175,10 @@ public class GameManager : MonoBehaviour
         txtstamina.enabled = false; //text hidden
         txtnostamina.enabled = false; //text hidden
         txtnoshooting.enabled = false; //text hidden
+
+        secretMessage.SetActive(false); //until character collides with the secret event object
+        secretobject.SetActive(false); //until the player closes the message of the secret event object
+        secretAnswer.SetActive(false); //until the player collide with the corresponding objects
     }
 
     public void TitlePage()
@@ -292,7 +321,7 @@ public class GameManager : MonoBehaviour
     public void GameStart()
     {
         gameIsOn = true;
-        InvokeRepeating("SpawnEnemies", 0, 10);
+        InvokeRepeating("SpawnEnemies", 0, 30);
         Cursor.lockState = CursorLockMode.Locked;
         cameraPlayer.enabled = true;
         character.SetActive(true);
@@ -368,7 +397,7 @@ public class GameManager : MonoBehaviour
             canMoveE = true;
             GameObject e = Instantiate(enemies, respawnELeft.transform.position, respawnELeft.transform.rotation);
             GameObject e2 = Instantiate(enemies, respawnERight.transform.position, respawnERight.transform.rotation);
-            instantiateTimer = 10f;
+            instantiateTimer = 30f;
         }
     }
 
@@ -424,6 +453,102 @@ public class GameManager : MonoBehaviour
         }
         return false;
     }
+
+    public void SecretEventActivate()
+    {
+        secretMessage.SetActive(true);
+        Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void ConfirmSecretMessage()
+    {
+        secretMessage.SetActive(false);
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        secretobject.SetActive(true);
+    }
+
+    public void SecretEventAnswer()
+    {
+        Time.timeScale = 0;
+        secretAnswer.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        //for(int i = 0; i < buttonsPositions.Length; i++)
+        //{
+        //    index = Random.Range(0, buttonsEvent.Length);
+        //    buttonSpawn = buttonsEvent[index];
+        //    buttonSpawn.gameObject.transform.position = buttonsPositions[i].transform.position;
+        //    buttonSpawn.gameObject.SetActive(true);
+        //}
+        for (int i = 0; i < buttonsEvent.Length; i++)
+        {
+            buttonSpawn = buttonsEvent[i];
+            buttonSpawn.gameObject.SetActive(true);
+        }
+
+        oneIMark.text = "?";
+        twoIMark.text = "?";
+        threeIMark.text = "?";
+        fourIMark.text = "?";
+    }
+
+    //OnClick for Secret Event
+    public void SorryButton()
+    {
+        Time.timeScale = 1;
+        secretAnswer.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void HButton()
+    {
+        oneIMark.text = h;
+        buttonH.gameObject.SetActive(false);
+    }
+
+    public void EButton()
+    {
+        twoIMark.text = e;
+        buttonE.gameObject.SetActive(false);
+    }
+
+    public void LButton()
+    {
+        threeIMark.text = l;
+        buttonL.gameObject.SetActive(false);
+    }
+
+    public void PButton()
+    {
+        fourIMark.text = p;
+        buttonP.gameObject.SetActive(false);
+    }
+
+    public void AButton()
+    {
+        buttonA.gameObject.SetActive(false);
+    }
+
+    public void SButton()
+    {
+        buttonS.gameObject.SetActive(false);
+    }
+
+    public void TButton()
+    {
+        buttonT.gameObject.SetActive(false);
+    }
+
+    public void MButton()
+    {
+        buttonM.gameObject.SetActive(false);
+    }
+
 
     //OnClick for message when collecting an object
     public void ConfirmMessage()
