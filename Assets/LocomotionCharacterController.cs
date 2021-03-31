@@ -10,7 +10,7 @@ public class LocomotionCharacterController : MonoBehaviour
 
     //Movement
     private Vector3 playerVelocity; //where we want our character to be in the next Update
-    [SerializeField] private float speed = 6f; //Speed multiplicator
+    public float speed = 6f; //Speed multiplicator
 
     //Jump and landing
     private bool groundedPlayer;

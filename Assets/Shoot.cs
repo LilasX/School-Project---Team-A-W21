@@ -42,9 +42,9 @@ public class Shoot : MonoBehaviour
 
                     if (hit.collider.tag == "Enemy")
                     {
-                        
                         Destroy(hit.collider.gameObject); //destroy enemy game object
                     }
+
                     if (hit.collider.tag == "Monster")
                     {
                         monster.life -= 25;

@@ -100,6 +100,14 @@ public class GameManager : MonoBehaviour
     private const string e = "E";
     private const string l = "L";
     private const string p = "P";
+    private bool eventActive = false;
+    int countB = 0;
+    int countCorrectB = 0;
+    private bool shootboost = false;
+    [SerializeField] private Image ty;
+    [SerializeField] private Text tygrateful;
+    [SerializeField] private Text boosts;
+    [SerializeField] private Button np;
 
     private void Awake()
     {
@@ -179,6 +187,11 @@ public class GameManager : MonoBehaviour
         secretMessage.SetActive(false); //until character collides with the secret event object
         secretobject.SetActive(false); //until the player closes the message of the secret event object
         secretAnswer.SetActive(false); //until the player collide with the corresponding objects
+
+        ty.enabled = false;
+        tygrateful.enabled = false;
+        boosts.enabled = false;
+        np.gameObject.SetActive(false);
     }
 
     public void TitlePage()
@@ -403,24 +416,48 @@ public class GameManager : MonoBehaviour
 
     public void LoseStamina()
     {
-        if (Mathf.FloorToInt(stamina) > 0)
+        if (!shootboost)
         {
-            stamina -= 5;
+            if (Mathf.FloorToInt(stamina) > 0)
+            {
+                stamina -= 5;
+            }
+
+            if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
+            {
+                txtnostamina.enabled = true;
+                Invoke("NoMoreStamina", 3);
+                sCamShoot = false;
+                character.transform.position = rigidchar.transform.position;
+                character.SetActive(true);
+                rigidchar.SetActive(false);
+                cameraPlayer.enabled = true;
+                cameraShoot.enabled = false;
+                cursorshoot.enabled = false;
+            }
+        }
+        else
+        {
+            if (Mathf.FloorToInt(stamina) > 0)
+            {
+                stamina -= 1;
+            }
+
+            if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 1)
+            {
+                txtnostamina.enabled = true;
+                Invoke("NoMoreStamina", 3);
+                sCamShoot = false;
+                character.transform.position = rigidchar.transform.position;
+                character.SetActive(true);
+                rigidchar.SetActive(false);
+                cameraPlayer.enabled = true;
+                cameraShoot.enabled = false;
+                cursorshoot.enabled = false;
+            }
         }
         
         txtstamina.text = prestamina + Mathf.FloorToInt(stamina).ToString(); //show stamina
-        if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5) 
-        {
-            txtnostamina.enabled = true;
-            Invoke("NoMoreStamina", 3);
-            sCamShoot = false;
-            character.transform.position = rigidchar.transform.position;
-            character.SetActive(true);
-            rigidchar.SetActive(false);
-            cameraPlayer.enabled = true;
-            cameraShoot.enabled = false;
-            cursorshoot.enabled = false;
-        }
     }
 
     public void NoMoreStamina()
@@ -447,10 +484,21 @@ public class GameManager : MonoBehaviour
 
     public bool NoShoot()
     {
-        if(Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
+        if (!shootboost)
         {
-            return true;
+            if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
+            {
+                return true;
+            }
         }
+        else
+        {
+            if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 1)
+            {
+                return true;
+            }
+        }
+        
         return false;
     }
 
@@ -473,17 +521,12 @@ public class GameManager : MonoBehaviour
 
     public void SecretEventAnswer()
     {
+        eventActive = true;
         Time.timeScale = 0;
         secretAnswer.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        //for(int i = 0; i < buttonsPositions.Length; i++)
-        //{
-        //    index = Random.Range(0, buttonsEvent.Length);
-        //    buttonSpawn = buttonsEvent[index];
-        //    buttonSpawn.gameObject.transform.position = buttonsPositions[i].transform.position;
-        //    buttonSpawn.gameObject.SetActive(true);
-        //}
+        
         for (int i = 0; i < buttonsEvent.Length; i++)
         {
             buttonSpawn = buttonsEvent[i];
@@ -499,6 +542,9 @@ public class GameManager : MonoBehaviour
     //OnClick for Secret Event
     public void SorryButton()
     {
+        countB = 0;
+        countCorrectB = 0;
+        eventActive = false;
         Time.timeScale = 1;
         secretAnswer.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
@@ -509,46 +555,83 @@ public class GameManager : MonoBehaviour
     {
         oneIMark.text = h;
         buttonH.gameObject.SetActive(false);
+        countB++;
+        countCorrectB++;
     }
 
     public void EButton()
     {
         twoIMark.text = e;
         buttonE.gameObject.SetActive(false);
+        countB++;
+        countCorrectB++;
     }
 
     public void LButton()
     {
         threeIMark.text = l;
         buttonL.gameObject.SetActive(false);
+        countB++;
+        countCorrectB++;
     }
 
     public void PButton()
     {
         fourIMark.text = p;
         buttonP.gameObject.SetActive(false);
+        countB++;
+        countCorrectB++;
     }
 
     public void AButton()
     {
         buttonA.gameObject.SetActive(false);
+        countB++;
     }
 
     public void SButton()
     {
         buttonS.gameObject.SetActive(false);
+        countB++;
     }
 
     public void TButton()
     {
         buttonT.gameObject.SetActive(false);
+        countB++;
     }
 
     public void MButton()
     {
         buttonM.gameObject.SetActive(false);
+        countB++;
     }
 
+    public void EventSuccess()
+    {
+        ty.enabled = true;
+        tygrateful.enabled = true;
+        boosts.enabled = true;
+        np.gameObject.SetActive(true);
+    }
+
+    public void EventSuccessConfirm()
+    {
+        ty.enabled = false;
+        tygrateful.enabled = false;
+        boosts.enabled = false;
+        np.gameObject.SetActive(false);
+
+        shootboost = true;
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        character.GetComponent<LocomotionCharacterController>().speed = 10f;
+        foreach (GameObject currentenemies in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            Destroy(currentenemies);
+        }
+    }
 
     //OnClick for message when collecting an object
     public void ConfirmMessage()
@@ -572,41 +655,84 @@ public class GameManager : MonoBehaviour
             //    cursorshoot.enabled = false;
             //}
 
-            if (Mathf.FloorToInt(stamina) >= 5)
+            if (!shootboost)
             {
-                if (sCamShoot)
+                if (Mathf.FloorToInt(stamina) >= 5)
                 {
-                    rigidchar.transform.position = character.transform.position;
-                    //sCamPlayer = false;
-                    character.SetActive(false);
-                    rigidchar.SetActive(true);
-                    cameraShoot.enabled = true;
-                    cameraPlayer.enabled = false;
-                    cursorshoot.enabled = true;
+                    if (sCamShoot)
+                    {
+                        rigidchar.transform.position = character.transform.position;
+                        //sCamPlayer = false;
+                        character.SetActive(false);
+                        rigidchar.SetActive(true);
+                        cameraShoot.enabled = true;
+                        cameraPlayer.enabled = false;
+                        cursorshoot.enabled = true;
+                    }
+                    else
+                    {
+                        //character.transform.position = rigidchar.transform.position;
+                        sCamShoot = false;
+                        character.SetActive(true);
+                        rigidchar.SetActive(false);
+                        cameraPlayer.enabled = true;
+                        cameraShoot.enabled = false;
+                        cursorshoot.enabled = false;
+                    }
                 }
-                else
+                else if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
                 {
-                    //character.transform.position = rigidchar.transform.position;
-                    sCamShoot = false;
-                    character.SetActive(true);
-                    rigidchar.SetActive(false);
-                    cameraPlayer.enabled = true;
-                    cameraShoot.enabled = false;
-                    cursorshoot.enabled = false;
+                    if (sCamShoot)
+                    {
+                        ReminderNoStamina();
+                        sCamShoot = false;
+                        rigidchar.SetActive(false);
+                        cameraPlayer.enabled = true;
+                        cameraShoot.enabled = false;
+                        cursorshoot.enabled = false;
+                    }
                 }
             }
-            else if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
+            else
             {
-                if (sCamShoot)
+                if (Mathf.FloorToInt(stamina) >= 1)
                 {
-                    ReminderNoStamina();
-                    sCamShoot = false;
-                    rigidchar.SetActive(false);
-                    cameraPlayer.enabled = true;
-                    cameraShoot.enabled = false;
-                    cursorshoot.enabled = false;
+                    if (sCamShoot)
+                    {
+                        rigidchar.transform.position = character.transform.position;
+                        //sCamPlayer = false;
+                        character.SetActive(false);
+                        rigidchar.SetActive(true);
+                        cameraShoot.enabled = true;
+                        cameraPlayer.enabled = false;
+                        cursorshoot.enabled = true;
+                    }
+                    else
+                    {
+                        //character.transform.position = rigidchar.transform.position;
+                        sCamShoot = false;
+                        character.SetActive(true);
+                        rigidchar.SetActive(false);
+                        cameraPlayer.enabled = true;
+                        cameraShoot.enabled = false;
+                        cursorshoot.enabled = false;
+                    }
+                }
+                else if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 1)
+                {
+                    if (sCamShoot)
+                    {
+                        ReminderNoStamina();
+                        sCamShoot = false;
+                        rigidchar.SetActive(false);
+                        cameraPlayer.enabled = true;
+                        cameraShoot.enabled = false;
+                        cursorshoot.enabled = false;
+                    }
                 }
             }
+
+            
 
             RaycastHit hit;
             if (Physics.Raycast(character.transform.position, Vector3.down, out hit, 5))
@@ -649,6 +775,27 @@ public class GameManager : MonoBehaviour
             {
                 SpawnEnemiesWithoutInvoke();
                 CancelInvoke("SpawnEnemies");
+            }
+
+            if (eventActive)
+            {
+                if(countB == 4)
+                {
+                    if(countCorrectB == 4)
+                    {
+                        EventSuccess();
+                        secretAnswer.SetActive(false);
+                        secretobject.SetActive(false);
+                        afterSecretobject.SetActive(false);
+                        eventActive = false;
+                    }
+                    else
+                    {
+                        SorryButton();
+                    }
+                    countB = 0;
+                    countCorrectB = 0;
+                }
             }
         }
         else
