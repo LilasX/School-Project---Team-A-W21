@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     private bool sCamShoot = false;
     [SerializeField] private GameObject rigidchar; //reference to the rigidbody replacing character
     private string sceneToReload = "LilasSceneS"; // Load this screen when retrying game
-    private bool gameIsOn = false;
+    public bool gameIsOn = false;
+    //private bool cameraswitch = false;
 
     //Menu UI
     [SerializeField] private Text title; //Reference for the title
@@ -74,12 +75,11 @@ public class GameManager : MonoBehaviour
     private static float recovery = 5f; //recover stamina 
     private bool healed; //after healing
     private bool instantiateMode = false;
-    [SerializeField] private float instantiateTimer = 10f;
+    [SerializeField] private float instantiateTimer = 30f;
 
     [SerializeField] private GameObject secretMessage; 
     [SerializeField] private GameObject secretobject; 
     [SerializeField] private GameObject secretAnswer; 
-    [SerializeField] private GameObject afterSecretobject;
     [SerializeField] private Button[] buttonsEvent;
     [SerializeField] private Button buttonH;
     [SerializeField] private Button buttonE;
@@ -130,6 +130,11 @@ public class GameManager : MonoBehaviour
     {
         sCamShoot = context.performed;
     }
+
+    //public void SwitchCamShootOnce(InputAction.CallbackContext context)
+    //{
+    //    cameraswitch = context.performed;
+    //}
 
     // Start is called before the first frame update
     void Start()
@@ -633,6 +638,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //public void CameraDirection()
+    //{
+    //    cameraShoot.transform.rotation = cameraPlayer.transform.rotation;
+    //    rigidchar.transform.forward = cameraPlayer.transform.forward;
+    //    rigidchar.transform.position = character.transform.position;
+    //    cameraswitch = false;
+    //}
+
     //OnClick for message when collecting an object
     public void ConfirmMessage()
     {
@@ -732,6 +745,10 @@ public class GameManager : MonoBehaviour
                 }
             }
 
+            //if (cameraswitch)
+            //{
+            //    CameraDirection();
+            //}
             
 
             RaycastHit hit;
@@ -786,7 +803,6 @@ public class GameManager : MonoBehaviour
                         EventSuccess();
                         secretAnswer.SetActive(false);
                         secretobject.SetActive(false);
-                        afterSecretobject.SetActive(false);
                         eventActive = false;
                     }
                     else

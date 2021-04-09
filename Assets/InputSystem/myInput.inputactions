@@ -38,25 +38,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "SwitchCamPlayer",
-                    "type": "Button",
-                    "id": "4a7e46fa-00aa-4dd3-a2bb-336367bd4580",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "SwitchCamShoot",
-                    "type": "Button",
-                    "id": "dfe6e172-f5bb-4ee6-a844-3694052a52c8",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
                     "name": "SwitchMode",
                     "type": "Button",
                     "id": "58176661-e52c-4c65-be35-63f6b66f371c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "SwitchPressOnce",
+                    "type": "Button",
+                    "id": "02452164-f2fb-444a-b7a3-c3ad935aa03c",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
@@ -307,17 +299,6 @@
                 },
                 {
                     "name": "",
-                    "id": "0689c411-32ba-4825-bbfe-472efdb74431",
-                    "path": "<Keyboard>/z",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "SwitchCamPlayer",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "d7bb76f9-35e8-49e7-8850-9997924f9687",
                     "path": "<Mouse>/rightButton",
                     "interactions": "Press(behavior=2)",
@@ -329,12 +310,34 @@
                 },
                 {
                     "name": "",
-                    "id": "a75eb3fd-e4b3-4356-8ec0-af945517428c",
-                    "path": "<Keyboard>/x",
+                    "id": "e859d782-a19c-48a6-b5b6-9faf48579f9f",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SwitchMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "546303e7-d77d-4b0d-b12c-5494526fbfe2",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "SwitchCamShoot",
+                    "action": "SwitchPressOnce",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8d38b800-c95b-48a1-8314-403a45a72fb5",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SwitchPressOnce",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
