@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class MapUI : MonoBehaviour
 {
+    
     public RectTransform playerInMap;
     public RectTransform map2dEnd;
     public Transform map3dParent;
     public Transform map3dEnd;
     public GameObject map;
+    [SerializeField] private GameObject mapExit;
     private Vector3 normalized, mapped;
+
+    private void Start()
+    {
+        map.SetActive(false);
+        mapExit.SetActive(false);
+    }
 
     private void Update()
     {
@@ -33,17 +41,25 @@ public class MapUI : MonoBehaviour
         return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     }
 
-    void OnTriggerEnter(Collider plyr)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (plyr.gameObject.tag == "Map")
+        if (collision.gameObject.tag == "Map")
+        {
             map.SetActive(true);
-
-        
+            mapExit.SetActive(true);
+            Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
-    private void OnTriggerExit(Collider plyr)
+    //OnClick
+    public void ExitMap() //Lilas
     {
-        if (plyr.gameObject.tag == "Map")
-            map.SetActive(false);
+        map.SetActive(false);
+        mapExit.SetActive(false);
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

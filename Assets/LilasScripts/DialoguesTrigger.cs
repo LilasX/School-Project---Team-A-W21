@@ -13,6 +13,7 @@ public class DialoguesTrigger : MonoBehaviour
         managerd = DialoguesManager.instance;
     }
 
+    //trigger the dialogues UI whenever this method is called
     public void TriggerDialogues()
     {
         managerd.StartDialogues(dialogues);

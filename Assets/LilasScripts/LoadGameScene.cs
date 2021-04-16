@@ -6,8 +6,8 @@ using UnityEngine.Playables;
 
 public class LoadGameScene : MonoBehaviour
 {
-    private string sceneToReload = "LilasScene"; // Load this screen when starting game
-    public PlayableDirector director;
+    private string sceneToReload = "LilasScene"; // Load this scene when starting game
+    public PlayableDirector director; //director playing the timeline in this scene
 
     public void LoadGame()
     {
@@ -23,6 +23,7 @@ public class LoadGameScene : MonoBehaviour
     {
         if (director == aDirector)
         {
+            //Load the game scene when cutscene is over
             SceneManager.LoadScene(sceneToReload); //Load the game scene
         }
             

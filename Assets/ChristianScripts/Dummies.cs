@@ -5,24 +5,31 @@ using UnityEngine;
 public class Dummies : MonoBehaviour
 {
     public GameObject confirmation;
-    private GameManager manager;
+   
     // Start is called before the first frame update
     void Start()
     {
-        manager = GameManager.instance;
+        
     }
     void OnTriggerEnter(Collider plyr)
     {
-        if (plyr.gameObject.tag == "Player")
+        if (plyr.gameObject.tag == "Dummy")
         {
             confirmation.SetActive(true);
-            Time.timeScale = 1;
+            Time.timeScale = 0;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Destroy(gameObject);
         }
     }
 
+    //OnClick
+    public void HideConfirmation() //Lilas
+    {
+        confirmation.SetActive(false);
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
     
     // Update is called once per frame
     void Update()

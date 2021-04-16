@@ -22,6 +22,11 @@ public class InteractionsOfRigidBodyFPS : MonoBehaviour
         {
             manager.Dead(); //when character collides with deadly objects, call this method
         }
+
+        if (collision.gameObject.tag == "Monster") //Monster
+        {
+            manager.Dead(); //when character collides with deadly objects, call this method
+        }
     }
 
     // Update is called once per frame

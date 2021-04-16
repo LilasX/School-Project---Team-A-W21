@@ -44,14 +44,6 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
-                },
-                {
-                    "name": "SwitchPressOnce",
-                    "type": "Button",
-                    "id": "02452164-f2fb-444a-b7a3-c3ad935aa03c",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)"
                 }
             ],
             "bindings": [
@@ -316,28 +308,6 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "SwitchMode",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "546303e7-d77d-4b0d-b12c-5494526fbfe2",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "SwitchPressOnce",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8d38b800-c95b-48a1-8314-403a45a72fb5",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "SwitchPressOnce",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -37,11 +37,11 @@ public class FollowTarget : MonoBehaviour
         //Reference 4
         if (!manager.canMoveE)
         {
-            agent.isStopped = true;
+            agent.isStopped = true; //enemies stop moving
         }
         else
         {
-            agent.isStopped = false;
+            agent.isStopped = false; //enemies is moving
         }
     }
 }

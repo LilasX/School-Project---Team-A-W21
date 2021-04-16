@@ -14,7 +14,7 @@ public class SettingsManager : MonoBehaviour
     public Button appluButton;
     public GameSettingd gamesettings;
     public AudioSource musicSource;
-    public GameObject panneloption;
+    [SerializeField] private GameObject panneloption;
 
     private void OnEnable()
     {
@@ -78,12 +78,21 @@ public class SettingsManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        panneloption.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Time.timeScale != 0) //Lilas
+        {
+            if (Input.GetButtonDown("Cancel"))
+            {
+                Time.timeScale = 0;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                panneloption.SetActive(true);
+            }
+        }
     }
 }

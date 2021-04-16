@@ -15,6 +15,10 @@ TagManager:
   - Monster
   - SecretB
   - SecretE
+  - Healthbar
+  - clue1
+  - clue2
+  - clue3
   layers:
   - Default
   - TransparentFX

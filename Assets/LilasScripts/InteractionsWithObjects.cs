@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InteractionsWithObjects : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class InteractionsWithObjects : MonoBehaviour
     [SerializeField] private ParticleSystem healingcircle; //one of the particle system in the prefab
     [SerializeField] private ParticleSystem healingstar; //one of the particle system in the prefab
 
+    private string sceneToReload = "LilasSceneS2"; // Load this scene when game completed
 
     // Start is called before the first frame update
     void Start()
@@ -27,18 +29,30 @@ public class InteractionsWithObjects : MonoBehaviour
             controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
         }
 
-        if (collision.gameObject.tag == "SecretB")
+        if (collision.gameObject.tag == "Monster") //Monster
         {
             controller.enabled = false; //we need to deactivate the controller or it won't respawn (Start of reference 1)
-            manager.SecretEventActivate();
+            manager.Dead(); //when character collides with deadly objects, call this method
             controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
         }
 
-        if (collision.gameObject.tag == "SecretE")
+        if (collision.gameObject.tag == "SecretB") //Capsule close to character's respawning point
         {
             controller.enabled = false; //we need to deactivate the controller or it won't respawn (Start of reference 1)
-            manager.SecretEventAnswer();
+            manager.SecretEventActivate(); //activate UI with coded message
             controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
+        }
+
+        if (collision.gameObject.tag == "SecretE") //capsule active after colliding with the capsule close to character's respawning point
+        {
+            controller.enabled = false; //we need to deactivate the controller or it won't respawn (Start of reference 1)
+            manager.SecretEventAnswer(); //activate UI with the riddle
+            controller.enabled = true; //reactivate the controller after respawning (End of reference 1)
+        }
+
+        if(collision.gameObject.tag == "Portal")
+        {
+            SceneManager.LoadScene(sceneToReload); //Load the game scene
         }
     }
 

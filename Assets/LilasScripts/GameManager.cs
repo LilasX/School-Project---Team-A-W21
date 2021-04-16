@@ -14,18 +14,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject enemies; //Reference of our enemy prefab
     [SerializeField] private GameObject respawnELeft; //Reference to where the enemies will be spawning from
     [SerializeField] private GameObject respawnERight; //Reference to where the enemies will be spawning from
-    //private float oldTime = 0f; //Old time (0 by default) which allows us to toggle (switch) between a pause and the time scale of the game
     public bool canMoveE = true; //if enemies move or not
     [SerializeField] private Camera cameraPlayer; //camera with character visible
     [SerializeField] private Camera cameraShoot; //first person camera for shooting
     [SerializeField] private Camera cameraMenu; //camera for the menu
     [SerializeField] private Image cursorshoot; //shooting image
+    public Image effectshoot; //shooting image effect when shooting
     //private bool sCamPlayer = false;
     private bool sCamShoot = false;
     [SerializeField] private GameObject rigidchar; //reference to the rigidbody replacing character
     private string sceneToReload = "LilasSceneS"; // Load this screen when retrying game
-    public bool gameIsOn = false;
-    //private bool cameraswitch = false;
+    public bool gameIsOn = false; //when the game started officially excluding menu
 
     //Menu UI
     [SerializeField] private Text title; //Reference for the title
@@ -33,19 +32,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject btnReplay; //Reference for button play
     [SerializeField] private GameObject btnQuit; //Reference for button play
     [SerializeField] private GameObject btnBegin; //Reference for button Begin
-    [SerializeField] private Text txtCredits; //text for credits
-    [SerializeField] private Text txtCredits1; //text for credits
-    [SerializeField] private Text txtCredits2; //text for credits
-    [SerializeField] private Text txtCredits3; //text for credits
-    [SerializeField] private Text pageCredits1; //page number for credits
-    [SerializeField] private Text pageCredits2; //page number for credits
-    [SerializeField] private Text pageCredits3; //page number for credits
-    [SerializeField] private GameObject btnCredits1C; //Reference for button credits1 continue
-    [SerializeField] private GameObject btnCredits2C; //Reference for button credits2 continue
-    [SerializeField] private GameObject btnCredits3C; //Reference for button credits3 continue
-    [SerializeField] private GameObject btnCredits1B; //Reference for button credits1 back
-    [SerializeField] private GameObject btnCredits2B; //Reference for button credits2 back
-    [SerializeField] private GameObject btnCredits3B; //Reference for button credits3 back
     [SerializeField] private Text txtRules; //text for rules
     [SerializeField] private Text txtRulesC; //text for rules
     [SerializeField] private Text pageRules; //page number for rules
@@ -61,7 +47,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text pageControls; //page number for controls
     [SerializeField] private GameObject btnControlsB; //Reference for button controls back
     [SerializeField] private GameObject btnplay; //Reference for button play
+    [SerializeField] private GameObject settings; //Reference to the settings object
+    [SerializeField] private GameObject settingsButton; //Reference to the button for settings in the menu
 
+    //Life and stamina for shooting
     [SerializeField] private int lives = 5; //number of lives before game over
     private const string prelives = "Lives = "; //pretext before showing the number of lives
     [SerializeField] private Text txtlives; //text for lives
@@ -74,12 +63,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text txtnoshooting; //text for no shooting when recovering stamina
     private static float recovery = 5f; //recover stamina 
     private bool healed; //after healing
-    private bool instantiateMode = false;
-    [SerializeField] private float instantiateTimer = 30f;
+    private bool instantiateMode = false; //if we're using the method to instantiate enemies instead of InvokeRepeating
+    [SerializeField] private float instantiateTimer = 20f; //the repeat rate of spawning enemies like InvokeRepeating
+    [SerializeField] private GameObject aurapar; //Particle system played when interacting with healing spots (to recover stamina)
 
-    [SerializeField] private GameObject secretMessage; 
-    [SerializeField] private GameObject secretobject; 
-    [SerializeField] private GameObject secretAnswer; 
+    //Secret Event related
+    [SerializeField] private GameObject secretMessage; //the message that appears after interacting with game object with tag SecretB
+    [SerializeField] private GameObject secretobject; //game object with tag SecretE
+    [SerializeField] private GameObject secretAnswer; //UI for riddle
+    [SerializeField] private GameObject secretBegin; //game object with tag SecretB to activate the other capsule with tag SecretE
+
+    //buttons used for the riddle
     [SerializeField] private Button[] buttonsEvent;
     [SerializeField] private Button buttonH;
     [SerializeField] private Button buttonE;
@@ -91,7 +85,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Button buttonM;
     [SerializeField] private GameObject[] buttonsPositions;
     private Button buttonSpawn;
-    int index;
+
+    //Text used for the riddle
     [SerializeField] private Text oneIMark;
     [SerializeField] private Text twoIMark;
     [SerializeField] private Text threeIMark;
@@ -121,20 +116,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //public void SwitchCamPlayer(InputAction.CallbackContext context)
-    //{
-    //    sCamPlayer = context.performed;
-    //}
-
     public void SwitchCamShoot(InputAction.CallbackContext context)
     {
         sCamShoot = context.performed;
     }
-
-    //public void SwitchCamShootOnce(InputAction.CallbackContext context)
-    //{
-    //    cameraswitch = context.performed;
-    //}
 
     // Start is called before the first frame update
     void Start()
@@ -144,28 +129,17 @@ public class GameManager : MonoBehaviour
         cameraPlayer.enabled = false;
         cameraShoot.enabled = false;
         cursorshoot.enabled = false;
+        effectshoot.gameObject.SetActive(false);
         rigidchar.SetActive(false);
         character.SetActive(false);
 
+        //Menu
         cameraMenu.enabled = true;
         btnBegin.SetActive(true); //the button Begin is available
         btnQuit.SetActive(true); //the button Quit is active
         btnReplay.SetActive(false); //inactive until dead or game completed
         menuBG.SetActive(true); //menu plane is active
 
-        txtCredits.enabled = false; //active at appropriate page of the menu
-        txtCredits1.enabled = false; //active at appropriate page of the menu   
-        txtCredits2.enabled = false; //active at appropriate page of the menu   
-        txtCredits3.enabled = false; //active at appropriate page of the menu   
-        pageCredits1.enabled = false; //active at appropriate page of the menu
-        pageCredits2.enabled = false; //active at appropriate page of the menu
-        pageCredits3.enabled = false; //active at appropriate page of the menu
-        btnCredits1C.SetActive(false); //active at appropriate page of the menu
-        btnCredits2C.SetActive(false); //active at appropriate page of the menu
-        btnCredits3C.SetActive(false); //active at appropriate page of the menu
-        btnCredits1B.SetActive(false); //active at appropriate page of the menu
-        btnCredits2B.SetActive(false); //active at appropriate page of the menu
-        btnCredits3B.SetActive(false); //active at appropriate page of the menu
         txtRules.enabled = false; //active at appropriate page of the menu
         txtRulesC.enabled = false; //active at appropriate page of the menu
         pageRules.enabled = false; //active at appropriate page of the menu
@@ -181,7 +155,10 @@ public class GameManager : MonoBehaviour
         pageControls.enabled = false; //active at appropriate page of the menu
         btnControlsB.SetActive(false); //active at appropriate page of the menu
         btnplay.SetActive(false); //not visible until last page
+        settings.SetActive(false); //settings inactive
+        settingsButton.SetActive(true); //settings button is active
 
+        //UI in the game
         txtlives.enabled = false; //text hidden
         diedOnce.enabled = false; //when player died once
         gameOver.enabled = false; //inactive unless dead and game over
@@ -189,77 +166,29 @@ public class GameManager : MonoBehaviour
         txtnostamina.enabled = false; //text hidden
         txtnoshooting.enabled = false; //text hidden
 
+        aurapar.SetActive(false); //particle system for healing
+
+        //secret event related
         secretMessage.SetActive(false); //until character collides with the secret event object
         secretobject.SetActive(false); //until the player closes the message of the secret event object
         secretAnswer.SetActive(false); //until the player collide with the corresponding objects
 
+        //Secret event with riddle related
         ty.enabled = false;
         tygrateful.enabled = false;
         boosts.enabled = false;
         np.gameObject.SetActive(false);
     }
 
+    //OnClick on the menu
+    public void SettingsOn()
+    {
+        settings.SetActive(true);
+    }
+
     public void TitlePage()
     {
         //Deactivate Pages Before and After
-        txtCredits.enabled = false; //active at appropriate page of the menu
-        txtCredits1.enabled = false; //active at appropriate page of the menu
-        pageCredits1.enabled = false; //active at appropriate page of the menu
-        btnCredits1C.SetActive(false); //active at appropriate page of the menu
-        btnCredits1B.SetActive(false); //active at appropriate page of the menu
-
-        //Active in this page
-        title.enabled = true; //title is visible
-        btnQuit.SetActive(true); //quitting is an option
-        btnBegin.SetActive(true); //the button Begin is available
-    }
-
-    public void CreditsPage1()
-    {
-        //Deactivate Pages Before and After
-        title.enabled = false; //title is invisible
-        btnQuit.SetActive(false); //inactive
-        btnBegin.SetActive(false); //ianctive
-        txtCredits2.enabled = false; //active at appropriate page of the menu
-        pageCredits2.enabled = false; //active at appropriate page of the menu
-        btnCredits2C.SetActive(false); //active at appropriate page of the menu
-        btnCredits2B.SetActive(false); //active at appropriate page of the menu
-
-        //Active in this page
-        txtCredits.enabled = true; //active at appropriate page of the menu
-        txtCredits1.enabled = true; //active at appropriate page of the menu   
-        pageCredits1.enabled = true; //active at appropriate page of the menu
-        btnCredits1C.SetActive(true); //active at appropriate page of the menu
-        btnCredits1B.SetActive(true); //active at appropriate page of the menu
-    }
-
-    public void CreditsPage2()
-    {
-        //Deactivate Pages Before and After
-        txtCredits1.enabled = false; //active at appropriate page of the menu
-        pageCredits1.enabled = false; //active at appropriate page of the menu
-        btnCredits1C.SetActive(false); //active at appropriate page of the menu
-        btnCredits1B.SetActive(false); //active at appropriate page of the menu
-        txtCredits3.enabled = false; //active at appropriate page of the menu 
-        pageCredits3.enabled = false; //active at appropriate page of the menu
-        btnCredits3C.SetActive(false); //active at appropriate page of the menu
-        btnCredits3B.SetActive(false); //active at appropriate page of the menu
-
-        //Active in this page
-        txtCredits.enabled = true; //active at appropriate page of the menu
-        txtCredits2.enabled = true; //active at appropriate page of the menu   
-        pageCredits2.enabled = true; //active at appropriate page of the menu
-        btnCredits2C.SetActive(true); //active at appropriate page of the menu
-        btnCredits2B.SetActive(true); //active at appropriate page of the menu
-    }
-
-    public void CreditsPage3()
-    {
-        //Deactivate Pages Before and After
-        txtCredits2.enabled = false; //active at appropriate page of the menu
-        pageCredits2.enabled = false; //active at appropriate page of the menu
-        btnCredits2C.SetActive(false); //active at appropriate page of the menu
-        btnCredits2B.SetActive(false); //active at appropriate page of the menu
         txtRules.enabled = false; //active at appropriate page of the menu
         txtRulesC.enabled = false; //active at appropriate page of the menu
         pageRules.enabled = false; //active at appropriate page of the menu
@@ -267,22 +196,19 @@ public class GameManager : MonoBehaviour
         btnRulesB.SetActive(false); //active at appropriate page of the menu
 
         //Active in this page
-        txtCredits.enabled = true; //active at appropriate page of the menu
-        txtCredits3.enabled = true; //active at appropriate page of the menu   
-        pageCredits3.enabled = true; //active at appropriate page of the menu
-        btnCredits3C.SetActive(true); //active at appropriate page of the menu
-        btnCredits3B.SetActive(true); //active at appropriate page of the menu
+        title.enabled = true; //title is visible
+        btnQuit.SetActive(true); //quitting is an option
+        btnBegin.SetActive(true); //the button Begin is available
+        settingsButton.SetActive(true); //settings button is active
     }
 
     public void RulesPage()
     {
         //Deactivate Pages Before and After
-        txtCredits.enabled = false; //active at appropriate page of the menu
-        txtCredits.enabled = false; //active at appropriate page of the menu
-        txtCredits3.enabled = false; //active at appropriate page of the menu   
-        pageCredits3.enabled = false; //active at appropriate page of the menu
-        btnCredits3C.SetActive(false); //active at appropriate page of the menu
-        btnCredits3B.SetActive(false); //active at appropriate page of the menu
+        title.enabled = false; //title is invisible
+        btnQuit.SetActive(false); //inactive
+        btnBegin.SetActive(false); //inactive
+        settingsButton.SetActive(false); //settings button is inactive
         txtAdditionalInfo.enabled = false; //active at appropriate page of the menu
         txtAdditionalInfoC.enabled = false; //active at appropriate page of the menu
         pageAdditionalInfo.enabled = false; //active at appropriate page of the menu
@@ -339,7 +265,7 @@ public class GameManager : MonoBehaviour
     public void GameStart()
     {
         gameIsOn = true;
-        InvokeRepeating("SpawnEnemies", 0, 30);
+        InvokeRepeating("SpawnEnemies", 0, 20);
         Cursor.lockState = CursorLockMode.Locked;
         cameraPlayer.enabled = true;
         character.SetActive(true);
@@ -366,6 +292,7 @@ public class GameManager : MonoBehaviour
     public void PlayAgain()
     {
         SceneManager.LoadScene(sceneToReload); //Load the game scene
+        
     }
 
     public void Dead()
@@ -374,14 +301,15 @@ public class GameManager : MonoBehaviour
         diedOnce.enabled = true; //activate message
         Invoke("DiedOff", 3); //message disappears
         txtlives.text = prelives + lives.ToString("D1"); //show lives
+        //character and rigidbody is resawned at character's respawning place
         character.transform.position = respawningC.transform.position;
         rigidchar.transform.position = respawningC.transform.position;
         healed = false;
-        CancelInvoke("SpawnEnemies");
-        canMoveE = false;
-        instantiateMode = false;
-        instantiateTimer = 10f;
-        InvokeRepeating("SpawnEnemies", 30, 10);
+        CancelInvoke("SpawnEnemies"); //Cancel current InvokeRepeating
+        canMoveE = false; //enemies can't move
+        instantiateMode = false; //enemies do not spawn with the other function to spawn enemies
+        instantiateTimer = 20f; //reinitialize timer to 20f
+        InvokeRepeating("SpawnEnemies", 30, 20); //Restart respawning enemies after 30 secs of player's death
         if(lives == 0)
         {
             gameIsOn = false;
@@ -394,34 +322,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Message telling player, they lost a life
     public void DiedOff()
     {
         diedOnce.enabled = false; //deactivate
     }
 
+    //Spawning enemies with InvokeRepeating
     public void SpawnEnemies()
     {
         canMoveE = true;
         GameObject e = Instantiate(enemies, respawnELeft.transform.position, respawnELeft.transform.rotation);
         GameObject e2 = Instantiate(enemies, respawnERight.transform.position, respawnERight.transform.rotation);
     }
-    
+
+    //Spawning enemies without InvokeRepeating
     public void SpawnEnemiesWithoutInvoke()
     {
-        //Reference 2
+        //Reference 1
         instantiateTimer -= Time.deltaTime;
         if (Mathf.FloorToInt(instantiateTimer) == 0)
         {
             canMoveE = true;
             GameObject e = Instantiate(enemies, respawnELeft.transform.position, respawnELeft.transform.rotation);
             GameObject e2 = Instantiate(enemies, respawnERight.transform.position, respawnERight.transform.rotation);
-            instantiateTimer = 30f;
+            instantiateTimer = 20f;
         }
     }
 
+    //Every time the player shoots, call this method
     public void LoseStamina()
     {
-        if (!shootboost)
+        if (!shootboost) //if they didn't succeed in the secret event
         {
             if (Mathf.FloorToInt(stamina) > 0)
             {
@@ -430,18 +362,19 @@ public class GameManager : MonoBehaviour
 
             if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
             {
-                txtnostamina.enabled = true;
-                Invoke("NoMoreStamina", 3);
-                sCamShoot = false;
+                txtnostamina.enabled = true; //inform player, they don't have enough stamina to shoot
+                Invoke("NoMoreStamina", 3); //deactivate message informing player they don't have enough stamina to shoot
+                sCamShoot = false; //cannot enter shooting mode
                 character.transform.position = rigidchar.transform.position;
                 character.SetActive(true);
                 rigidchar.SetActive(false);
                 cameraPlayer.enabled = true;
                 cameraShoot.enabled = false;
                 cursorshoot.enabled = false;
+                effectshoot.gameObject.SetActive(false);
             }
         }
-        else
+        else //if they did get the boost from secret event
         {
             if (Mathf.FloorToInt(stamina) > 0)
             {
@@ -459,34 +392,40 @@ public class GameManager : MonoBehaviour
                 cameraPlayer.enabled = true;
                 cameraShoot.enabled = false;
                 cursorshoot.enabled = false;
+                effectshoot.gameObject.SetActive(false);
             }
         }
         
         txtstamina.text = prestamina + Mathf.FloorToInt(stamina).ToString(); //show stamina
     }
 
+    //Deactivate message informing player they don't have enough stamina to shoot
     public void NoMoreStamina()
     {
         txtnostamina.enabled = false; //deactivate
     }
 
+    //Activate message to remind the player they don't have enough stamina when they're trying to enter shooting mode
     public void ReminderNoStamina()
     {
         txtnostamina.enabled = true;
         Invoke("NoMoreStamina", 2);
     }
     
+    //Deactivate message informing player they can't enter shooting mode when healing
     public void NoShooting()
     {
         txtnoshooting.enabled = false; //deactivate
     }
 
+    //Activate message when player is trying to enter shooting mode when healing
     public void ReminderNoShooting()
     {
         txtnoshooting.enabled = true;
         Invoke("NoShooting", 2);
     }
 
+    //when the player can shoot or not
     public bool NoShoot()
     {
         if (!shootboost)
@@ -503,10 +442,16 @@ public class GameManager : MonoBehaviour
                 return true;
             }
         }
+
+        if (Time.timeScale == 0)
+        {
+            return true;
+        }
         
         return false;
     }
 
+    //Activate coded message when colliding with capsule with tag SecretB
     public void SecretEventActivate()
     {
         secretMessage.SetActive(true);
@@ -515,6 +460,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
     }
 
+    //Close coded message and activate capsule with tag SecretE
     public void ConfirmSecretMessage()
     {
         secretMessage.SetActive(false);
@@ -524,6 +470,7 @@ public class GameManager : MonoBehaviour
         secretobject.SetActive(true);
     }
 
+    //Activate UI riddle
     public void SecretEventAnswer()
     {
         eventActive = true;
@@ -545,7 +492,7 @@ public class GameManager : MonoBehaviour
     }
 
     //OnClick for Secret Event
-    public void SorryButton()
+    public void SorryButton() //close UI riddle 
     {
         countB = 0;
         countCorrectB = 0;
@@ -556,6 +503,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
     }
 
+    //Buttons used for riddle
     public void HButton()
     {
         oneIMark.text = h;
@@ -612,6 +560,7 @@ public class GameManager : MonoBehaviour
         countB++;
     }
 
+    //Activate when player succeed completing the riddle
     public void EventSuccess()
     {
         ty.enabled = true;
@@ -620,54 +569,31 @@ public class GameManager : MonoBehaviour
         np.gameObject.SetActive(true);
     }
 
+    //After maths of the success of the riddle and boost acquired
     public void EventSuccessConfirm()
     {
         ty.enabled = false;
         tygrateful.enabled = false;
         boosts.enabled = false;
         np.gameObject.SetActive(false);
+        
 
         shootboost = true;
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        character.GetComponent<LocomotionCharacterController>().speed = 10f;
-        foreach (GameObject currentenemies in GameObject.FindGameObjectsWithTag("Enemy"))
+        character.GetComponent<LocomotionCharacterController>().speed = 10f; //increase speed to 10f
+        foreach (GameObject currentenemies in GameObject.FindGameObjectsWithTag("Enemy")) //destroy current spawned enemies
         {
             Destroy(currentenemies);
         }
     }
 
-    //public void CameraDirection()
-    //{
-    //    cameraShoot.transform.rotation = cameraPlayer.transform.rotation;
-    //    rigidchar.transform.forward = cameraPlayer.transform.forward;
-    //    rigidchar.transform.position = character.transform.position;
-    //    cameraswitch = false;
-    //}
-
-    //OnClick for message when collecting an object
-    public void ConfirmMessage()
-    {
-        //Message disappears
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if (gameIsOn)
+        if (gameIsOn) //after passing the menu
         {
-            //if (sCamPlayer)
-            //{
-            //    character.transform.position = rigidchar.transform.position;
-            //    sCamShoot = false;
-            //    character.SetActive(true);
-            //    rigidchar.SetActive(false);
-            //    cameraPlayer.enabled = true;
-            //    cameraShoot.enabled = false;
-            //    cursorshoot.enabled = false;
-            //}
-
             if (!shootboost)
             {
                 if (Mathf.FloorToInt(stamina) >= 5)
@@ -684,13 +610,13 @@ public class GameManager : MonoBehaviour
                     }
                     else
                     {
-                        //character.transform.position = rigidchar.transform.position;
                         sCamShoot = false;
                         character.SetActive(true);
                         rigidchar.SetActive(false);
                         cameraPlayer.enabled = true;
                         cameraShoot.enabled = false;
                         cursorshoot.enabled = false;
+                        effectshoot.gameObject.SetActive(false);
                     }
                 }
                 else if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 5)
@@ -703,6 +629,7 @@ public class GameManager : MonoBehaviour
                         cameraPlayer.enabled = true;
                         cameraShoot.enabled = false;
                         cursorshoot.enabled = false;
+                        effectshoot.gameObject.SetActive(false);
                     }
                 }
             }
@@ -722,13 +649,13 @@ public class GameManager : MonoBehaviour
                     }
                     else
                     {
-                        //character.transform.position = rigidchar.transform.position;
                         sCamShoot = false;
                         character.SetActive(true);
                         rigidchar.SetActive(false);
                         cameraPlayer.enabled = true;
                         cameraShoot.enabled = false;
                         cursorshoot.enabled = false;
+                        effectshoot.gameObject.SetActive(false);
                     }
                 }
                 else if (Mathf.FloorToInt(stamina) >= 0 && Mathf.FloorToInt(stamina) < 1)
@@ -741,24 +668,26 @@ public class GameManager : MonoBehaviour
                         cameraPlayer.enabled = true;
                         cameraShoot.enabled = false;
                         cursorshoot.enabled = false;
+                        effectshoot.gameObject.SetActive(false);
                     }
                 }
             }
 
-            //if (cameraswitch)
-            //{
-            //    CameraDirection();
-            //}
-            
+            if (!rigidchar.activeInHierarchy) //for the image to be inactive after no stamina to shoot
+            {
+                effectshoot.gameObject.SetActive(false);
+            }
 
             RaycastHit hit;
             if (Physics.Raycast(character.transform.position, Vector3.down, out hit, 5))
             {
                 if (hit.collider.tag == "Heal") //Heal object
                 {
+                    aurapar.transform.position = character.transform.position;
+                    aurapar.SetActive(true);
                     CancelInvoke("SpawnEnemies");
                     instantiateMode = false;
-                    instantiateTimer = 10f;
+                    instantiateTimer = 20f;
                     canMoveE = false;
                     healed = true;
                     if (Mathf.FloorToInt(stamina) < 100)
@@ -778,6 +707,7 @@ public class GameManager : MonoBehaviour
                         cameraPlayer.enabled = true;
                         cameraShoot.enabled = false;
                         cursorshoot.enabled = false;
+                        effectshoot.gameObject.SetActive(false);
                     }
                 }
                 else if (!canMoveE && healed && !instantiateMode)
@@ -785,15 +715,18 @@ public class GameManager : MonoBehaviour
                     healed = false;
                     instantiateMode = true;
                     canMoveE = true;
+                    aurapar.SetActive(false);
                 }
             }
 
+            //Cannot call InvokeRepeating in Update so we have to make one manually to spawn enemies at certain rate
             if (instantiateMode)
             {
                 SpawnEnemiesWithoutInvoke();
                 CancelInvoke("SpawnEnemies");
             }
 
+            //Secret event
             if (eventActive)
             {
                 if(countB == 4)
@@ -802,6 +735,7 @@ public class GameManager : MonoBehaviour
                     {
                         EventSuccess();
                         secretAnswer.SetActive(false);
+                        secretBegin.SetActive(false);
                         secretobject.SetActive(false);
                         eventActive = false;
                     }
@@ -821,18 +755,10 @@ public class GameManager : MonoBehaviour
             sCamShoot = false;
             cameraShoot.enabled = false;
             cursorshoot.enabled = false;
+            effectshoot.gameObject.SetActive(false);
         }
-
-        //if (Input.GetButtonDown("Cancel")) //Pausing the game with button Escape
-        //{
-        //    //Reference 1
-        //    float prevTime = oldTime; //Hide the saved timeScaled
-        //    oldTime = Time.timeScale; //Permute (alter) the timeScale so we can come back to it
-        //    Time.timeScale = prevTime; //Change timeScale for the hidden value
-        //}
     }
 }
 
-//References
-//1- Script for pausing the game in Game Engine I class project Rebonds : https://youtu.be/4fmy_ymj6jE?t=3332
-//2- https://answers.unity.com/questions/637597/instantiate-at-intervals.html (for instantiating prefabs at a certain interval to replace InvokeRepeating)
+//Reference
+//1- https://answers.unity.com/questions/637597/instantiate-at-intervals.html (for instantiating prefabs at a certain interval to replace InvokeRepeating)
